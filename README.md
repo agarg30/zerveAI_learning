@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # zerveAI_learning
 🏥 CareSignal /assess API — Documentation
 
