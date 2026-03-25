@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # zerveAI_learning
 🏥 CareSignal /assess API — Documentation
 
@@ -48,20 +49,8 @@ A successful 200 OK response returns:
     "admissions_x_conditions",
     "diag_Diabetes"
   ],
-  "ai_clinical_summary": "This 52-year-old female patient carries a medium 30-day readmission risk (score 0.2485), driven primarily by advanced age and a high admissions-to-conditions interaction score. Additional concern is noted for a primary diabetes diagnosis, warranting close post-discharge monitoring and timely outpatient follow-up."
-}
-
-Response Field Schema
-FieldTypeDescriptionpatient_inputobjectEcho of the original request fields for traceability.patient_input.ageintegerPatient age as submitted.patient_input.genderstringPatient gender as submitted ("M" or "F").patient_input.prior_admissionsintegerPrior admissions count as submitted.patient_input.chronic_conditionsintegerChronic conditions count as submitted.patient_input.primary_diagnosisstringPrimary diagnosis category as submitted.patient_input.medicationsintegerMedication count as submitted.risk_scorefloatPredicted probability of 30-day readmission. Range: 0.0 – 1.0. Rounded to 4 decimal places.risk_tierstringCategorical risk classification derived from a comorbidity score. One of: Low, Medium, High, Critical.top_driversarray[string]Top 3 feature names ranked by absolute SHAP value (most impactful first). See driver label reference below.ai_clinical_summarystringRule-based two-sentence clinical narrative summarising the risk score, tier, and top drivers in plain English.
 Risk Tier Reference
 Tiers are computed from an internal comorbidity score = min(chronic_conditions × 1.5 + prior_admissions × 1.2 + medications × 0.5, 30):
-TierComorbidity Score RangeTypical Risk Score RangeLow0 – 7.5~0.10 – 0.25Medium7.5 – 15.0~0.20 – 0.40High15.0 – 22.5~0.40 – 0.70Critical22.5 – 30.0~0.65 – 0.95
-Top Driver Label Reference
-Feature NameHuman Readable Labelcomorbidity_scorea high comorbidity burdenageadvanced agenum_medicationsa high medication countnum_chronic_conditionsmultiple chronic conditionsnum_prior_admissionsfrequent prior hospital admissionsadmissions_x_conditionsa high admissions-to-conditions interaction scoreage_groupage-related risk factorsdiag_Cardiaca primary cardiac diagnosisdiag_Diabetesa primary diabetes diagnosisdiag_Respiratorya primary respiratory diagnosisdiag_Oncologya primary oncology diagnosisdiag_Neurologicala primary neurological diagnosisdiag_Othera complex multi-system diagnosis
-
-Example Requests & Responses
-Example 1 — Low Risk Patient
-Request:
 {
   "age": 28,
   "gender": "F",
@@ -77,9 +66,6 @@ Response (200 OK):
     "age": 28,
     "gender": "F",
     "prior_admissions": 0,
-    "chronic_conditions": 1,
-    "primary_diagnosis": "Respiratory",
-    "medications": 2
   },
   "risk_score": 0.1948,
   "risk_tier": "Low",
@@ -94,9 +80,6 @@ Request:
   "age": 82,
   "gender": "M",
   "prior_admissions": 5,
-  "chronic_conditions": 6,
-  "primary_diagnosis": "Cardiac",
-  "medications": 12
 }
 
 Response (200 OK):
@@ -219,3 +202,67 @@ The top_drivers list always contains exactly 3 feature names, ranked by SHAP imp
 The ai_clinical_summary is deterministic — the same inputs will always produce the same narrative.
 Typical response latency is < 500ms under normal load.
 The model was trained on 2,000 synthetic patients with a 30-day readmission base rate of ~29%.
+=======
+# CareSignal AI
+
+Predict 30-day hospital readmission risk with explainable model outputs and plain-English clinical summaries.
+
+## What is in this repo
+
+- Synthetic healthcare dataset generation
+- Feature engineering pipeline matching the Zerve notebook workflow
+- Gradient boosting training pipeline with AUC/Brier evaluation
+- SHAP-based top-driver extraction
+- FastAPI service for real-time patient assessment
+
+## Project structure
+
+- `src/caresignal/data.py`: synthetic patient data generation
+- `src/caresignal/features.py`: feature engineering for training and inference
+- `src/caresignal/train.py`: model training and artifact export
+- `src/caresignal/inference.py`: reusable single-patient scoring logic
+- `src/caresignal/api.py`: FastAPI app with `/`, `/health`, and `/assess`
+- `scripts/train_model.py`: trains model and writes artifacts
+- `scripts/demo_assess.py`: sample local inference calls
+
+## Setup
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+pip install -e .
+```
+
+## Train the model
+
+```bash
+python scripts/train_model.py
+```
+
+This creates:
+
+- `artifacts/model.joblib`
+- `artifacts/metrics.json`
+- `artifacts/risk_table.csv`
+
+## Run the API locally
+
+```bash
+uvicorn caresignal.api:app --reload
+```
+
+## Example request
+
+```bash
+curl -X POST "http://127.0.0.1:8000/assess" \
+  -H "Content-Type: application/json" \
+  -d '{"age":82,"gender":"M","prior_admissions":5,"chronic_conditions":6,"primary_diagnosis":"Cardiac","medications":12}'
+```
+
+## Notes
+
+- The current repo uses synthetic patient data, so it is safe to share publicly.
+- The API depends on local model artifacts. Run training before starting the API.
+- This repo is the GitHub-ready version of the Zerve notebook workflow.
+>>>>>>> 656bc59 (Initial CareSignal AI project)

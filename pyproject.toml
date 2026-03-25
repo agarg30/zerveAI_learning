@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "caresignal-ai"
+version = "0.1.0"
+description = "Predict 30-day readmission risk with explainability and clinical summaries"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.115,<1.0",
+  "uvicorn[standard]>=0.32,<1.0",
+  "numpy>=1.26,<3.0",
+  "pandas>=2.2,<3.0",
+  "scikit-learn>=1.5,<2.0",
+  "shap>=0.46,<1.0",
+  "joblib>=1.4,<2.0",
+  "matplotlib>=3.9,<4.0",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
